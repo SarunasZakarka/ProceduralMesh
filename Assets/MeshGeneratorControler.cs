@@ -6,10 +6,13 @@ public class MeshGeneratorControler : MonoBehaviour {
 
     public string path;
     public GameObject generatedObj;
+    public MeshGenerator meshGenerator;
+    public Material material;
 
 	public void GenerateMesh()
     {
-        generatedObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        DestroyImmediate(generatedObj);
+        generatedObj = meshGenerator.GenerateRectangle(material);
     }
     public GameObject GetExportObj()
     {
