@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MeshGenerator : MonoBehaviour {
 
-    public int xSize, ySize , zSize ;
+    int xSize, ySize, zSize;
 
     private Mesh mesh;
     private Vector3[] vertices;
@@ -12,8 +12,12 @@ public class MeshGenerator : MonoBehaviour {
     int vertex;
 
 
-    public GameObject GenerateRectangle(Material material)
+    public GameObject GenerateRectangle(Material material,int _xSize, int _ySize, int _zSize)
     {
+        xSize = _xSize;
+        ySize = _ySize;
+        zSize = _zSize;
+
         GameObject newMesh = new GameObject();
         newMesh.AddComponent<MeshFilter>().mesh = mesh = new Mesh();
         newMesh.AddComponent<MeshRenderer>().sharedMaterial= material;
@@ -42,6 +46,16 @@ public class MeshGenerator : MonoBehaviour {
         CreateTriangles();
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
+        ManualyRecalculateNormals();
+    }
+
+    void ManualyRecalculateNormals()
+    {
+       /* Vector3[] normals = mesh.normals;
+        for (int i = 0; i < normals.Length; i++)
+        {
+            Debug.Log(normals[i]);
+        }*/
     }
 
     void GenerateVertices()
@@ -252,17 +266,28 @@ public class MeshGenerator : MonoBehaviour {
         t += 6; 
     }
 
-    private void OnDrawGizmos()
+    
+
+   /* private void OnDrawGizmos()
     {
-      /*  if (vertices == null)
+        Vector3[] normals = mesh.normals;
+        for (int i = 0; i < normals.Length; i++)
         {
-            return;
+            Debug.Log(normals[i]);
+            Gizmos.color = Color.red;
+            Vector3 direction = transform.TransformDirection(normals[i]) * 5;
+            Gizmos.DrawRay(transform.position, direction);
         }
-        Gizmos.color = Color.black;
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            Gizmos.DrawSphere(vertices[i], 0.1f);
-        }*/
-    }
+      
+        /*  if (vertices == null)
+          {
+              return;
+          }
+          Gizmos.color = Color.black;
+          for (int i = 0; i < vertices.Length; i++)
+          {
+              Gizmos.DrawSphere(vertices[i], 0.1f);
+          }
+    }*/
 }
 
