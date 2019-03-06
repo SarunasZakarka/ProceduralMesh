@@ -46,17 +46,8 @@ public class MeshGenerator : MonoBehaviour {
         CreateTriangles();
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
-        ManualyRecalculateNormals();
     }
-
-    void ManualyRecalculateNormals()
-    {
-       /* Vector3[] normals = mesh.normals;
-        for (int i = 0; i < normals.Length; i++)
-        {
-            Debug.Log(normals[i]);
-        }*/
-    }
+    
 
     void GenerateVertices()
     {

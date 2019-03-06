@@ -28,7 +28,7 @@ public class AlterMesh : MonoBehaviour {
 
     Vector3[] vertices;
 
-    public void Alter(GameObject obj, int _xSize, int _ySize, int _zSize)
+    public void Alter(GameObject obj, int _xSize, int _ySize, int _zSize, int curvesCount, float curveWidth, bool spiral,int curveStrength)
     {
 
         xSize = _xSize;
@@ -45,13 +45,14 @@ public class AlterMesh : MonoBehaviour {
         Mesh mesh = obj.GetComponent<MeshFilter>().sharedMesh;
         vertices = mesh.vertices;
 
-        int ring = xSize * 2 + zSize * 2;
-        int sideVertices = ring * (ySize+1);
-
-        int vertToCheck = vertices.Length - ((xSize - 1) * (zSize - 1))*2;
-
         int vert = 0;
-        float step = 4*Mathf.PI / (float)ySize;
+        float step = curvesCount * Mathf.PI / (float)ySize;
+        float nextChange = Mathf.PI;
+        bool front = false;
+
+        float amountToAddZFront;
+        float amountToAddZBack;
+        float amountToAddX;
 
         for (int y = 0; y <= ySize; y++)
         {
@@ -74,26 +75,48 @@ public class AlterMesh : MonoBehaviour {
 
         for (int y = 0; y <= ySize; y++)
         {
-            float amountToAddZ = (Mathf.Sin(step * y) * 10);
-            float amountToAddX = (Mathf.Cos(step * y) * 10);
+            amountToAddZFront = (Mathf.Sin(step * y) * curveStrength);
+            amountToAddZBack = (Mathf.Sin(step * y) * curveStrength);
+
+            if (spiral)
+                amountToAddX = (Mathf.Cos(step * y) * curveStrength);
+            else
+                amountToAddX = 0;
+
+            if (step * y >= nextChange)
+            {
+                front = !front;
+                nextChange += Mathf.PI;
+                
+            }
+
+            if (front)
+            {
+                amountToAddZFront *= curveWidth;
+            }
+            else
+            {
+                amountToAddZBack *= curveWidth;
+            }
+
 
             for (int v = 0; v < frontSideVer[v].Count; v++)
             {
-                AdjustVertex(frontSideVer[y][v], amountToAddX, 0, amountToAddZ);
-                AdjustVertex(backSideVer[y][v], amountToAddX, 0, amountToAddZ);
+                AdjustVertex(frontSideVer[y][v], amountToAddX, 0, amountToAddZFront);
+                AdjustVertex(backSideVer[y][v], amountToAddX, 0, amountToAddZBack);
             }
             for (int v = 0; v < rightSideVer[v].Count; v++)
             {
-                AdjustVertex(rightSideVer[y][v], amountToAddX, 0, amountToAddZ);
-                AdjustVertex(leftSideVer[y][v], amountToAddX, 0, amountToAddZ);
+                AdjustVertex(rightSideVer[y][v], amountToAddX, 0, amountToAddZBack);
+                AdjustVertex(leftSideVer[y][v], amountToAddX, 0, amountToAddZBack);
             }
             if (y == 0)
             {
-                AdjustPlane(botSideVer, amountToAddX, amountToAddZ);
+                AdjustPlane(botSideVer, amountToAddX, amountToAddZFront);
             }
             else if (y == ySize)
             {
-                AdjustPlane(topSideVer, amountToAddX, amountToAddZ);
+                AdjustPlane(topSideVer, amountToAddX, amountToAddZFront);
 
             }
         }
