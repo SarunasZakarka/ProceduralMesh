@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class CombineMeshes : MonoBehaviour {
@@ -22,9 +21,17 @@ public class CombineMeshes : MonoBehaviour {
 
             i++;
         }
+
         objs[0].GetComponent<MeshFilter>().mesh = new Mesh();
+        objs[0].GetComponent<MeshFilter>().sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         objs[0].GetComponent<MeshFilter>().sharedMesh.CombineMeshes(combine);
         objs[0].gameObject.SetActive(true);
+
+        for (i = 1; i < objs.Count; i++)
+        {
+            DestroyImmediate(objs[i]);
+        }
+
         return objs[0];
     }
 }

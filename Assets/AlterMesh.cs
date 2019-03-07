@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -15,7 +14,7 @@ public struct Vertex
     }
 }
 
-public class AlterMesh : MonoBehaviour {
+public class AlterMesh {
 
     int xSize, ySize, zSize;
 
@@ -30,22 +29,13 @@ public class AlterMesh : MonoBehaviour {
 
     public void Alter(GameObject obj, int _xSize, int _ySize, int _zSize, int curvesCount, float curveWidth, bool spiral,int curveStrength)
     {
-
         xSize = _xSize;
         ySize = _ySize;
         zSize = _zSize;
 
-        frontSideVer = new List<List<Vertex>>(ySize);
-        backSideVer = new List<List<Vertex>>(ySize);
-        rightSideVer = new List<List<Vertex>>(ySize);
-        leftSideVer = new List<List<Vertex>>(ySize);
-        topSideVer = new List<List<Vertex>>(zSize);
-        botSideVer = new List<List<Vertex>>(zSize);
-
         Mesh mesh = obj.GetComponent<MeshFilter>().sharedMesh;
         vertices = mesh.vertices;
 
-        int vert = 0;
         float step = curvesCount * Mathf.PI / (float)ySize;
         float nextChange = Mathf.PI;
         bool front = false;
@@ -54,29 +44,11 @@ public class AlterMesh : MonoBehaviour {
         float amountToAddZBack;
         float amountToAddX;
 
-        for (int y = 0; y <= ySize; y++)
-        {
-            frontSideVer.Add(AddVertexRow(ref vert, vertices,xSize));
-            rightSideVer.Add(AddVertexRow(ref vert, vertices, zSize));
-            backSideVer.Add( AddVertexRow(ref vert, vertices, xSize));
-            leftSideVer.Add(AddVertexRow(ref vert, vertices, zSize));
-           
-        }
-        for (int z = 0; z < zSize-1; z++)
-        {
-            topSideVer.Add(AddVertexRow(ref vert, vertices, xSize - 2, true));
-        }
-
-        for (int z = 0; z < zSize-1; z++)
-        {
-            botSideVer.Add(AddVertexRow(ref vert, vertices, xSize - 2, true));
-        }
-
+        AssignVerticesByOrientation();
 
         for (int y = 0; y <= ySize; y++)
         {
-            amountToAddZFront = (Mathf.Sin(step * y) * curveStrength);
-            amountToAddZBack = (Mathf.Sin(step * y) * curveStrength);
+            amountToAddZFront = amountToAddZBack = (Mathf.Sin(step * y) * curveStrength);
 
             if (spiral)
                 amountToAddX = (Mathf.Cos(step * y) * curveStrength);
@@ -87,7 +59,6 @@ public class AlterMesh : MonoBehaviour {
             {
                 front = !front;
                 nextChange += Mathf.PI;
-                
             }
 
             if (front)
@@ -157,5 +128,36 @@ public class AlterMesh : MonoBehaviour {
             vert--;
 
         return listToAdd;
+    }
+
+    void AssignVerticesByOrientation()
+    {
+
+        int vert = 0;
+
+        frontSideVer = new List<List<Vertex>>(ySize);
+        backSideVer = new List<List<Vertex>>(ySize);
+        rightSideVer = new List<List<Vertex>>(ySize);
+        leftSideVer = new List<List<Vertex>>(ySize);
+        topSideVer = new List<List<Vertex>>(zSize);
+        botSideVer = new List<List<Vertex>>(zSize);
+
+        for (int y = 0; y <= ySize; y++)
+        {
+            frontSideVer.Add(AddVertexRow(ref vert, vertices, xSize));
+            rightSideVer.Add(AddVertexRow(ref vert, vertices, zSize));
+            backSideVer.Add(AddVertexRow(ref vert, vertices, xSize));
+            leftSideVer.Add(AddVertexRow(ref vert, vertices, zSize));
+
+        }
+        for (int z = 0; z < zSize - 1; z++)
+        {
+            topSideVer.Add(AddVertexRow(ref vert, vertices, xSize - 2, true));
+        }
+
+        for (int z = 0; z < zSize - 1; z++)
+        {
+            botSideVer.Add(AddVertexRow(ref vert, vertices, xSize - 2, true));
+        }
     }
 }

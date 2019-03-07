@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class MeshGenerator : MonoBehaviour {
+public class MeshGenerator {
 
     int xSize, ySize, zSize;
 
@@ -120,7 +118,7 @@ public class MeshGenerator : MonoBehaviour {
                     (vertex + 1 ), 
                     ring + vertex + 1 );
             }
-            //paskuti quad reik jungti su pradiniai vertexais
+            //paskuti quad reik jungti su pradiniais vertexais
             SplitQuad( ref t,
                 vertex,
                 ring + vertex,
@@ -256,29 +254,5 @@ public class MeshGenerator : MonoBehaviour {
 
         t += 6; 
     }
-
-    
-
-   /* private void OnDrawGizmos()
-    {
-        Vector3[] normals = mesh.normals;
-        for (int i = 0; i < normals.Length; i++)
-        {
-            Debug.Log(normals[i]);
-            Gizmos.color = Color.red;
-            Vector3 direction = transform.TransformDirection(normals[i]) * 5;
-            Gizmos.DrawRay(transform.position, direction);
-        }
-      
-        /*  if (vertices == null)
-          {
-              return;
-          }
-          Gizmos.color = Color.black;
-          for (int i = 0; i < vertices.Length; i++)
-          {
-              Gizmos.DrawSphere(vertices[i], 0.1f);
-          }
-    }*/
 }
 

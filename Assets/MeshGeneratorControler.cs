@@ -6,9 +6,6 @@ public class MeshGeneratorControler : MonoBehaviour {
 
     public string path;
     public GameObject generatedObj;
-    public MeshGenerator meshGenerator;
-    public AlterMesh alterMesh;
-    public CombineMeshes combineMeshes;
     public MultipleObjects multipleObjects;
 
     public Material material;
@@ -21,18 +18,25 @@ public class MeshGeneratorControler : MonoBehaviour {
     [Range(1, 100)]
     public int curveStrength;
     public bool spiral;
+    public bool singleObject;
+    [Range(1, 20)]
+    public int objectsTimesTwo;
 
     public void GenerateMesh()
     {
         DestroyImmediate(generatedObj);
 
-        generatedObj = meshGenerator.GenerateRectangle(material,xSize, ySize, zSize);
-        alterMesh.Alter(generatedObj, xSize, ySize, zSize, curvesCount, curveWidth, spiral, curveStrength);
-        combineMeshes.CombineOBJ(multipleObjects.MultiplyObjects(generatedObj, curveStrength));
+        generatedObj = new MeshGenerator().GenerateRectangle(material,xSize, ySize, zSize);
+        new AlterMesh().Alter(generatedObj, xSize, ySize, zSize, curvesCount, curveWidth, spiral, curveStrength);
+        if(singleObject == false)
+        {
+            generatedObj = multipleObjects.MultiplyObjects(generatedObj, curveStrength, objectsTimesTwo);
+        }
     }
     public GameObject GetExportObj()
     {
         return generatedObj;
     }
+
 
 }
