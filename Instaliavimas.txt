@@ -1,0 +1,5 @@
+
+1. Atsisiusti Unity 2017.3
+2. Atsidaryti scena "1"
+3. Hierarchijoje pasirinkti MeshGenerator
+4. Nustatyti path kuriame bus saugomi exportuojami obj ir parametrus pagal kuriuos generuos
